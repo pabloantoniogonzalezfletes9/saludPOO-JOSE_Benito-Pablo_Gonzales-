@@ -1,0 +1,190 @@
+using System;
+using System.Collections.Generic;
+
+namespace FemTechPreguntas
+{
+    public class DatosMenstruacion
+    {
+        public int NivelDolor { get; set; }
+        public int DiasDuracion { get; set; }
+        public string FlujoAbundante { get; set; }
+        public string CicloRegular { get; set; }
+        public string DolorCabeza { get; set; }
+    }
+
+    public class DatosEmbarazo
+    {
+        public int Semanas { get; set; }
+        public string TieneMareos { get; set; }
+        public string DuermeBien { get; set; }
+        public string HinchazonPies { get; set; }
+        public string PresionAlta { get; set; }
+    }
+
+    public class DatosMenopausia
+    {
+        public int SofocosAlDia { get; set; }
+        public string FaltaSueno { get; set; }
+        public string ResequedadPiel { get; set; }
+        public string DolorArticular { get; set; }
+        public string CambiosAnimo { get; set; }
+    }
+
+    public class Bitacora<T>
+    {
+        public string Nombre { get; set; }
+        public int NivelEstres { get; set; }
+        public string SintomaEmocional { get; set; }
+        public T DatosEtapa { get; set; }
+
+        public void GenerarConsejoMejora()
+        {
+            Console.WriteLine($"\nRECOMENDACIONES PARA {Nombre.ToUpper()}");
+            string sentir = SintomaEmocional.ToLower();
+
+            if (sentir.Contains("triste") || sentir.Contains("desanimada") || sentir.Contains("llorar"))
+            {
+                Console.WriteLine(" Alerta hormonal. Intente caminatas al sol, alimentos con Omega-3 y mantenga comunicacion.");
+            }
+            else if (sentir.Contains("enojada") || sentir.Contains("irritada") || sentir.Contains("ansiosa"))
+            {
+                Console.WriteLine(" Sistema nervioso alterado. Reduzca cafeina, haga respiracion guiada y tome pausas.");
+            }
+            else if (sentir.Contains("cansada") || sentir.Contains("fatiga") || sentir.Contains("sueño"))
+            {
+                Console.WriteLine(" Consumo alto de energia. Priorice siestas cortas y delegue tareas en el hogar.");
+            }
+            else
+            {
+                Console.WriteLine(" Estado de animo estable. Continue su monitoreo.");
+            }
+
+            if (NivelEstres > 7)
+            {
+                Console.WriteLine(" ALERTA CRITICA El estres alto altera sus hormonas. Priorice el descanso absoluto hoy.");
+            }
+            else if (NivelEstres > 4)
+            {
+                Console.WriteLine(" Nivel moderado. Aplique la regla respiratoria 4-7-8 y busque un pasatiempo.");
+            }
+        }
+
+        public void ProcesarAfectacionesAdicionales(List<string> malestares)
+        {
+            Console.WriteLine("\nDIAGNOSTICO DE AFECTACIONES ADICIONALES...");
+            foreach (var malestar in malestares)
+            {
+                string m = malestar.ToLower();
+                if (m.Contains("cabeza")) Console.WriteLine(" MEDIDA Compresa fria, aislar de luz e hidratar.");
+                else if (m.Contains("espalda")) Console.WriteLine(" MEDIDA Evitar cargas, calor local y estirar.");
+                else if (m.Contains("dormir")) Console.WriteLine(" MEDIDA Suspender pantallas e infusion de manzanilla.");
+                else if (m.Contains("estómago")) Console.WriteLine(" MEDIDA Comidas ligeras, evitar grasas y caminar.");
+                else Console.WriteLine(" MEDIDA Monitorear frecuencia y consultar si persiste.");
+            }
+        }
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = ConsoleColor.White;
+            bool continuar = true;
+
+            while (continuar)
+            {
+                Console.Clear();
+                Console.WriteLine("=================================================\nSALUD<-MUJER->\n=================================================");
+
+                Console.Write("\nNombre: ");
+                string nombre = Console.ReadLine();
+                Console.Write("Sintoma de hoy: ");
+                string sintoma = Console.ReadLine();
+                Console.Write("Estres 1-10: ");
+                int estres = int.Parse(Console.ReadLine());
+
+                Console.WriteLine("\nEtapa:\n 1. Menstruacion\n 2. Embarazo\n 3. Menopausia");
+                Console.Write("Opcion: ");
+                string opcion = Console.ReadLine();
+                List<string> adicionales = new List<string>();
+
+                if (opcion == "1")
+                {
+                    var bMen = new Bitacora<DatosMenstruacion> { Nombre = nombre, NivelEstres = estres, SintomaEmocional = sintoma };
+                    var m = new DatosMenstruacion();
+                    Console.Write("Dolor 1-10: "); m.NivelDolor = int.Parse(Console.ReadLine());
+                    Console.Write("Dias sangrando: "); m.DiasDuracion = int.Parse(Console.ReadLine());
+                    Console.Write("Flujo abundante si/no: "); m.FlujoAbundante = Console.ReadLine();
+                    Console.Write("Ciclo regular si/no: "); m.CicloRegular = Console.ReadLine();
+                    Console.Write("Dolor de cabeza si/no: "); m.DolorCabeza = Console.ReadLine();
+
+                    bMen.DatosEtapa = m;
+                    bMen.GenerarConsejoMejora();
+
+                    Console.WriteLine("\nAnalisis Menstruacion:");
+                    if (m.NivelDolor >= 8) Console.WriteLine(" Alivio Bolsas de agua caliente. Evite bebidas frias.");
+                    if (m.DiasDuracion > 7) Console.WriteLine(" Medida Sangrado prolongado. Evite esfuerzos fisicos.");
+                    if (m.FlujoAbundante.ToLower().StartsWith("s")) Console.WriteLine(" Medida Coma espinacas y lentejas. Registre uso de toallas.");
+                    if (m.CicloRegular.ToLower().StartsWith("n")) Console.WriteLine(" Medida Controle calendario. Duerma a sus horas estables.");
+                    if (m.DolorCabeza.ToLower().StartsWith("s")) Console.WriteLine(" Medida Habitacion oscura. Reduzca sodio y embutidos.");
+
+                    Console.Write("\nTienes algo mas que te afecte si/no: ");
+                    while (Console.ReadLine().ToLower().StartsWith("s")) { Console.Write("Que: "); adicionales.Add(Console.ReadLine()); Console.Write("Otro si/no: "); }
+                    bMen.ProcesarAfectacionesAdicionales(adicionales);
+                }
+                else if (opcion == "2")
+                {
+                    var bEmb = new Bitacora<DatosEmbarazo> { Nombre = nombre, NivelEstres = estres, SintomaEmocional = sintoma };
+                    var e = new DatosEmbarazo();
+                    Console.Write("Semanas: "); e.Semanas = int.Parse(Console.ReadLine());
+                    Console.Write("Mareos si/no: "); e.TieneMareos = Console.ReadLine();
+                    Console.Write("Duerme bien si/no: "); e.DuermeBien = Console.ReadLine();
+                    Console.Write("Pies hinchados si/no: "); e.HinchazonPies = Console.ReadLine();
+                    Console.Write("Presion alta si/no: "); e.PresionAlta = Console.ReadLine();
+
+                    bEmb.DatosEtapa = e;
+                    bEmb.GenerarConsejoMejora();
+
+                    Console.WriteLine("\nAnalisis Embarazo:");
+                    if (e.TieneMareos.ToLower().StartsWith("s")) Console.WriteLine(" Medida Galletas de soda secas. Evite olores fuertes.");
+                    if (e.DuermeBien.ToLower().StartsWith("n")) Console.WriteLine(" Medida Duerma de lado izquierdo con almohada entre rodillas.");
+                    if (e.HinchazonPies.ToLower().StartsWith("s")) Console.WriteLine(" Medida Eleve piernas. Reduzca sal y camine 15 min.");
+                    if (e.PresionAlta.ToLower().StartsWith("s")) Console.WriteLine(" ALERTA Monitoree presion. Si ve luces o duele cabeza vaya a urgencias.");
+
+                    Console.Write("\nTienes algo mas que te afecte si/no: ");
+                    while (Console.ReadLine().ToLower().StartsWith("s")) { Console.Write("Que: "); adicionales.Add(Console.ReadLine()); Console.Write("Otro si/no: "); }
+                    bEmb.ProcesarAfectacionesAdicionales(adicionales);
+                }
+                else if (opcion == "3")
+                {
+                    var bMeno = new Bitacora<DatosMenopausia> { Nombre = nombre, NivelEstres = estres, SintomaEmocional = sintoma };
+                    var me = new DatosMenopausia();
+                    Console.Write("Sofocos al dia: "); me.SofocosAlDia = int.Parse(Console.ReadLine());
+                    Console.Write("Insomnio si/no: "); me.FaltaSueno = Console.ReadLine();
+                    Console.Write("Piel seca si/no: "); me.ResequedadPiel = Console.ReadLine();
+                    Console.Write("Dolor articular si/no: "); me.DolorArticular = Console.ReadLine();
+                    Console.Write("Cambios de animo si/no: "); me.CambiosAnimo = Console.ReadLine();
+
+                    bMeno.DatosEtapa = me;
+                    bMeno.GenerarConsejoMejora();
+
+                    Console.WriteLine("\nAnalisis Menopausia:");
+                    if (me.SofocosAlDia > 5) Console.WriteLine(" Alivio Ropa ligera de algodon. Lleve abanico y tome agua fria.");
+                    if (me.FaltaSueno.ToLower().StartsWith("s")) Console.WriteLine(" Medida Evite cenas pesadas. Infusion de manzanilla antes de dormir.");
+                    if (me.ResequedadPiel.ToLower().StartsWith("s")) Console.WriteLine(" Medida Cremas hidratantes neutras y beba mucha agua.");
+                    if (me.DolorArticular.ToLower().StartsWith("s")) Console.WriteLine(" Medida Alimentos con calcio y vitamina D. Ejercicios de bajo impacto.");
+                    if (me.CambiosAnimo.ToLower().StartsWith("s")) Console.WriteLine(" Medida Practique relajacion y comparta lo que siente con su familia.");
+
+                    Console.Write("\nTienes algo mas que te afecte si/no: ");
+                    while (Console.ReadLine().ToLower().StartsWith("s")) { Console.Write("Que: "); adicionales.Add(Console.ReadLine()); Console.Write("Otro si/no: "); }
+                    bMeno.ProcesarAfectacionesAdicionales(adicionales);
+                }
+
+                Console.WriteLine("\n=================================================");
+                Console.Write("¿Registrar otra persona si/no: ");
+                continuar = Console.ReadLine().ToLower().StartsWith("s");
+            }
+        }
+    }
+}
